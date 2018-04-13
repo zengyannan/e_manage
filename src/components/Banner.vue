@@ -2,23 +2,22 @@
     <el-header style="padding:0px;">
         <div class="banner_header">
             <el-row>
-                <el-col :lg="6" :xs="6">
+                <el-col :lg="6" :xs="24" style="line-height:32px;">
                     <span class="banner_title">{{title}}|{{title_suffix}}</span>
                 </el-col>
-                <el-col :lg="6" :xs="6">
-                    <el-container>
-                    <el-header style="text-align: right; font-size: 12px;height:32px;">
-                        <el-dropdown>
+                <el-col :lg="6" :xs="24" style="float:right;line-height:32px">
+                        <el-col :lg="3" :xs="24" style="float:right;">
+                        <el-dropdown style="text-align: right; font-size: 12px;">
                             <i class="el-icon-setting" style="margin-right: 15px"></i>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item>查看</el-dropdown-item>
-                                <el-dropdown-item>新增</el-dropdown-item>
-                                <el-dropdown-item>删除</el-dropdown-item>
+                                <el-dropdown-item>查看信息</el-dropdown-item>
+                                <el-dropdown-item>退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span>王小虎</span>
-                    </el-header>
-                </el-container>
+                        </el-col>
+                        <el-col style="float:right;" :lg="3">
+                        <span style="text-align:center;display:block;vertical-align:middle;">王小虎</span>
+                        </el-col>
                 </el-col>
             </el-row>
         </div>

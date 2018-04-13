@@ -1,13 +1,8 @@
 
 <template>
   <div id="app">
-    <el-container>
-      <banner />
-      <leftMenu></leftMenu>
-      <el-main></el-main>
-      <el-footer></el-footer>
-    </el-container>
-  
+   <router-view>
+   </router-view>
     <!-- <div>
       <el-button @click="startHacking">Start</el-button>
       <el-button @click="fuck">Fuck</el-button>
@@ -16,10 +11,9 @@
 </template>
 
 <script>
-import leftMenu from './components/LeftMenu'
-import banner from './components/Banner'
+// import index from './components/Index'
 export default {
-  components:{leftMenu,banner},
+  // components:{index},
   methods: {
     startHacking () {
       this.$notify({
@@ -38,7 +32,15 @@ export default {
         position: 'top-left'
       })
     }
-  }
+  },
+  // watch:{
+  //   '$route'(to,from){
+  //     let user = JSON.parse(sessionStorage.getItem('user'));
+  //     if(!user){
+  //       this.$router.replace('/login');
+  //     }
+  //   }
+  // }
 }
 </script>
 
