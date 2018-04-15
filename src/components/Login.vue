@@ -73,6 +73,7 @@
             //     this.$router.push({ path: '/main' });
             //   }
             // });
+            this.$router.push({ path: '/main' });
           } else {
             console.log('error submit!!');
             return false;

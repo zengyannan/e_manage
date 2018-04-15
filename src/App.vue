@@ -50,4 +50,7 @@ export default {
   text-align: center;
   margin: 0 auto;
 }
+body{
+    background-color: #F0F0F0;
+}
 </style>
