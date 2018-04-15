@@ -1,11 +1,10 @@
 <template>
-    <el-header style="padding:0px;">
-        <div class="banner_header">
-            <el-row>
-                <el-col :lg="6" :xs="24" style="line-height:32px;">
+    <el-header style="padding:0px;height:32px;margin-bottom:30px;">
+        <div class="banner_header" style="height:32px;">
+                <el-col :lg="8" :xs="24" style="line-height:32px;">
                     <span class="banner_title">{{title}}|{{title_suffix}}</span>
                 </el-col>
-                <el-col :lg="6" :xs="24" style="float:right;line-height:32px">
+                <el-col :lg="8" :xs="24" style="float:right;line-height:32px">
                         <el-col :lg="3" :xs="24" style="float:right;">
                         <el-dropdown style="text-align: right; font-size: 12px;">
                             <i class="el-icon-setting" style="margin-right: 15px"></i>
@@ -19,7 +18,6 @@
                         <span style="text-align:center;display:block;vertical-align:middle;">王小虎</span>
                         </el-col>
                 </el-col>
-            </el-row>
         </div>
     </el-header>
 </template>
