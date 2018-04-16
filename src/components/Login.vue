@@ -7,6 +7,14 @@
     <el-form-item prop="checkPass">
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
+    <el-select  prop="loginType" v-model="ruleForm2.loginType" placeholder="请选择" style="width:100%;">
+      <el-option
+       v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
       <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
@@ -16,7 +24,7 @@
 </template>
 
 <script>
-  // import { requestLogin } from '@/api/api';
+  import { requestLogin } from '../api/token';
   import NProgress from 'nprogress'
   // import MenuUtils from '@/utils/MenuUtils'
   var routers = []
@@ -25,9 +33,18 @@
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
-          checkPass: 'admin'
+          account: '',
+          checkPass: '',
+          loginType:'hr',
         },
+        options: [{
+          value: 'hr',
+          label: '管理員'
+        }, {
+          value: 'doctor',
+          label: '醫生'
+        }]
+        ,
         rules2: {
           account: [
             { required: true, message: '请输入账号', trigger: 'blur' },
@@ -35,6 +52,10 @@
           ],
           checkPass: [
             { required: true, message: '请输入密码', trigger: 'blur' },
+            //{ validator: validaePass2 }
+          ],
+          loginType: [
+            { required: true, message: '请选择账户类型', trigger: 'blur' },
             //{ validator: validaePass2 }
           ]
         },
@@ -46,7 +67,7 @@
         this.$refs.ruleForm2.resetFields();
       },
       login(data){
-        window.sessionStorage.setItem('user',JSON.stringify(data))
+        window.sessionStorage.setItem('menus',JSON.stringify(data))
         MenuUtils(routers,data)
         
       },
@@ -54,25 +75,26 @@
         var _this = this;
         this.$refs.ruleForm2.validate((valid) => {
           if (valid) {
-            // this.logining = true;
-            // NProgress.start();
-            // var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            // requestLogin(loginParams).then(res => {
-            //   this.logining = false;
-            //   NProgress.done();
-            //   let { errno, data } = res;
-            //   if (errno !== 0) {
-            //     this.$notify({
-            //       title: '错误',
-            //       message: errno,
-            //       type: 'error'
-            //     });
-            //   } else {
-            //     this.login(data)
-            //     this.$router.addRoutes(routers)
-            //     this.$router.push({ path: '/main' });
-            //   }
-            // });
+            this.logining = true;
+            NProgress.start();
+            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass ,loginType:this.ruleForm2.loginType};
+            requestLogin(loginParams).then(res => {
+              this.logining = false;
+              NProgress.done();
+              let { meta, data } = res;
+              if (meta.success === false) {
+                this.$notify({
+                  title: '错误',
+                  message: meta.message,
+                  type: 'error'
+                });
+              } else {
+                // this.login(data)
+                // this.$router.addRoutes(routers)
+                // this.$router.push({ path: '/main' });
+                console.log(data);
+              }
+            });
             this.$router.push({ path: '/main' });
           } else {
             console.log('error submit!!');
