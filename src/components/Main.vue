@@ -17,7 +17,7 @@
         label="url">
       </el-table-column>
     </el-table>
-    </template>
+</template>
 <script>
 import {getAllMenu} from '../api/menu'
 export default {

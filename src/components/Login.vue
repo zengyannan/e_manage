@@ -25,9 +25,9 @@
 
 <script>
   import { requestLogin } from '../api/token';
-  import {getMenusTree} from '../api/menu'
+  import { getMenuTree } from '../api/menu'
   import NProgress from 'nprogress'
-  // import MenuUtils from '@/utils/MenuUtils'
+  import MenuUtils from '../utils/MenuUtils'
   var routers = []
   export default {
     data() {
@@ -70,7 +70,6 @@
       login(data){
         window.sessionStorage.setItem('menus',JSON.stringify(data))
         MenuUtils(routers,data)
-        
       },
       handleSubmit2(ev) {
         var _this = this;
@@ -93,9 +92,17 @@
                 // this.login(data)
                 // this.$router.addRoutes(routers)
                 // this.$router.push({ path: '/main' });
-                console.log(data);
+                console.log(JSON.stringify(data));
                 sessionStorage.setItem("user_token",JSON.stringify(data));
-                this.$router.push({ path: '/main' });
+                //获取token后 获取菜单
+                getMenuTree().then(
+                  res=>{
+                    console.log(res.data);
+                    this.login(res.data);
+                    this.$router.addRoutes(routers);
+                    this.$router.push({ path: '/main' });
+                  }
+                )
               }
             });
             this.$router.push({ path: '/main' });

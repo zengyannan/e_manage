@@ -7,8 +7,8 @@ export const getAllMenu = params =>{
         res => res.data);
 }
 
-export const getMenuTree =()=>{
-    return axios.post(
-        
-    )
+
+export const getMenuTree = params =>{
+    return axios.get(base+"/tree",params).then(
+        res=>res.data);
 }

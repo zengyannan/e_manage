@@ -10,20 +10,21 @@ import axios from 'axios';
 Vue.use(ElementUI)
 
 //验证是否有菜单
-let data = JSON.parse(window.sessionStorage.getItem('menus'))
-if (data){
+let menus = JSON.parse(window.sessionStorage.getItem('menus'))
+if (menus){
   //这里是防止用户手动刷新页面，整个app要重新加载,动态新增的路由，会消失，所以我们重新add一次
   let routes = []
-  MenuUtils(routes,data)
+  MenuUtils(routes,menus)
   router.addRoutes(routes)
   window.sessionStorage.removeItem('isLoadNodes')
 }
 router.beforeEach((route,from,next) => { 
-  let data = JSON.parse(window.sessionStorage.getItem('user_token'));
-  if(data && route.path === '/login'){
+  let menus = JSON.parse(window.sessionStorage.getItem('menus'));
+  if(menus && route.path === '/login'){
     //这里不使用router进行跳转，是因为，跳转到登录页面的时候，是需要重新登录，获取数据的，这个时候，会再次向router实例里面add路由规则，
     //而next()跳转过去之后，没有刷新页面，之前的规则还是存在的，但是使用location的话，可以刷新页面，当刷新页面的时候，整个app会重新加载
     //而我们在刷新之前已经把sessionStorage里的user移除了，所以上面的添加路由也不行执行
+    window.sessionStorage.removeItem('menus')
     window.sessionStorage.removeItem('user_token')
     window.sessionStorage.removeItem('isLoadNodes')
     window.location.href = '/'
@@ -32,7 +33,7 @@ router.beforeEach((route,from,next) => {
   if(route.meta.noRequireAuth===true){
     next()
   }
-  if (!data && route.path !== '/login') {
+  if (!menus && route.path !== '/login') {
     next({ path: '/login' })
   } else {
     if (route.path) {
