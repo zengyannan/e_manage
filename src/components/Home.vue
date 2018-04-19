@@ -4,6 +4,9 @@
 			<el-col :span="3" class="logo">
 				<span>诊断系统<!--{{nodes.length}}--></span>
 			</el-col>
+			<el-col :span="3" style="float:right" class="logo">
+				<router-link to="/login">退出登录</router-link>
+			</el-col>
 		</el-col>
 
 		<el-col :span="24" class="main">
@@ -16,7 +19,8 @@
 				<div class="grid-content bg-purple-light">
 					<el-col :span="24" class="breadcrumb-container">
 						<strong class="title">{{$route.name}}</strong>
-						<el-breadcrumb separator="/" class="breadcrumb-inner">
+						<!--separator="/" separator-class="el-icon-arrow-right" -->
+						<el-breadcrumb  separator-class="el-icon-arrow-right" class="breadcrumb-inner">
 							<el-breadcrumb-item v-for="(item,index) in $route.matched" :key="item.name">
 								{{ item.name }}
 							</el-breadcrumb-item>
@@ -107,6 +111,20 @@ import MenuTree from './MenuTree'
 				width: 40px;
 				float: left;
 				margin: 10px 10px 10px 18px;
+			}
+			.txt {
+				color: #20a0ff
+			}
+		}
+		.logo {
+			font-size: 16px;
+			a{
+				line-height: 32px;
+				color: #f0f0f0;
+				text-decoration: none;
+			}
+			a:hover{
+				color: #20a0ff;
 			}
 			.txt {
 				color: #20a0ff

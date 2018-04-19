@@ -11,11 +11,6 @@ Vue.use(Router);
 
 export default new Router({
     routes: [
-        // {
-        //     path: '/',
-        //     name: 'Home',
-        //     component: Home,
-        // },
         {
             path: '/login',
             name: 'Login',
@@ -36,30 +31,30 @@ export default new Router({
             leaf:true,
             hidden: true
         },
-        {
-            path: '/',
-            name: '主界面',
-            component: Home,
-            leaf:false,
-            hidden:false,
-            children: [
-                {
-                path: '/main',
-                name: '主页',
-                component: Main,
-                leaf:true,
-                hidden:false
-               },
-               {
-                path: '/test',
-                name: '测试页面',
-                component: Test,
-                leaf:true,
-                hidden:false
-               }
-            ]
+        // {
+        //     path: '/',
+        //     name: '主界面',
+        //     component: Home,
+        //     leaf:false,
+        //     hidden:false,
+        //     children: [
+        //         {
+        //         path: '/main',
+        //         name: '主页',
+        //         component: Main,
+        //         leaf:true,
+        //         hidden:false
+        //        },
+        //        {
+        //         path: '/test',
+        //         name: '测试页面',
+        //         component: Test,
+        //         leaf:true,
+        //         hidden:false
+        //        }
+        //     ]
 
-        }
+        // }
         // {
         //   path: '/hello',
         //   name: 'test',
