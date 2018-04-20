@@ -8,10 +8,9 @@
 				<router-link to="/login">退出登录</router-link>
 			</el-col>
 		</el-col>
-
-		<el-col :span="24" class="main">
+		<el-col :span="24" class="main" style="overflow:auto;">
 			<aside>
-				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" theme="dark" unique-opened router>
+				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" theme="dark" unique-opened  router>
 					<menu-tree :nodes="$router.options.routes"></menu-tree>
 				</el-menu>
 			</aside>
@@ -61,11 +60,13 @@ import MenuTree from './MenuTree'
 		onSubmit() {
 			console.log('submit!');
 		},
-		handleopen() {
-			//console.log('handleopen');
+		handleopen(key, keyPath) {
+			console.log('handleopen');
+			console.log(key, keyPath);
 		},
-		handleclose() {
-			//console.log('handleclose');
+		handleclose(key, keyPath) {
+			console.log('handleclose');
+			console.log(key, keyPath);
 		},
 		handleselect: function(a, b) {
 		}

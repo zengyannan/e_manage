@@ -1,16 +1,25 @@
 <template>
-  <div>
-    <template v-for="(node,index) in nodes" v-if="!node.hidden">
-      <el-submenu :index="index+''" v-if="!node.leaf">
-        <template slot="title">
-          <i :class="node.iconCls"></i>{{node.name}}</template>
+    <div>
+    <template v-for="(node,index) in nodes">  
+      <el-menu-item v-if="node.leaf&&node&&!node.hidden"  
+                    :key="node.id" :data="node" :index="node.path" :route="{name:node.name}"
+                    >  
+        <i :class="node.iconCls"></i>  
+        <span slot="title">{{node.name}}</span>  
+      </el-menu-item>  
+  
+      <el-submenu v-if="!node.leaf&&node&&!node.hidden"  
+                  :key="node.id" :data="node" :index="node.path">  
+        <template slot="title">  
+          <i :class="node.iconCls"></i>  
+          <span slot="title">{{node.name}}</span>  
+        </template>  
+        <el-menu-item-group>
         <menu-tree :nodes="node.children"></menu-tree>
-      </el-submenu>
-      <!-- 这里是用:route="{name:node.name}，如果不使用name跳转的话，可以在数据源那里把path写成全路径即可 -->
-      <el-menu-item v-if="node.leaf" :index="node.path" :route="{name:node.name}">
-        <i :class="node.iconCls"></i>{{node.name}}</el-menu-item>
-    </template>
-  </div>
+        </el-menu-item-group> 
+      </el-submenu>  
+    </template>  
+  </div> 
 </template>
 
 <script type="text/ecmascript-6">
