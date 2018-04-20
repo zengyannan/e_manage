@@ -69,16 +69,23 @@ axios.interceptors.request.use(
 )  
 axios.interceptors.response.use(function (response) {  
 // token 已过期，重定向到登录页面  
-if (response.data.code == 4){  
-  localStorage.clear()  
-  router.replace({  
-                  path: '/signin',  
-                  query: {redirect: router.currentRoute.fullPath}  
-              })  
+if (response){  
+  // localStorage.clear()  
+  // router.replace({  
+  //                 path: '/signin',  
+  //                 query: {redirect: router.currentRoute.fullPath}  
+  //             })  
 }  
 return response  
 }, function (error) {  
 // Do something with response error  
+console.log(error.response.status);
+if(error.response.status===401){
+   router.replace({  
+                  path: '/login',  
+                  query: {redirect: router.currentRoute.fullPath}  
+              })  
+}
 return Promise.reject(error)  
 })  
 

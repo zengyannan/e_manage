@@ -17,6 +17,15 @@
         prop="url"
         label="url">
       </el-table-column>
+      <el-table-column
+      fixed="right"
+      label="操作"
+      width="100">
+      <template slot-scope="scope">
+        <el-button @click="handaleLook(scope.row)" type="text" >查看</el-button>
+        <el-button @click="handleEdit(scope.row)" type="text" >编辑</el-button>
+      </template>
+    </el-table-column>
     </el-table>
     <div class="block">
     <el-pagination
@@ -55,7 +64,13 @@ export default {
         // this.pageSize=res.data.pageSize;
         this.total=res.data.total;
     });
-      }
+    },
+    handaleLook(val){
+      console.log(val);
+    },
+    handleEdit(val){
+      console.log(val);
+    }
   },
   data(){
     return {
