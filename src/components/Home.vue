@@ -8,6 +8,7 @@
 				<router-link to="/login">退出登录</router-link>
 			</el-col>
 		</el-col>
+		<!--滚动条-->
 		<el-col :span="24" class="main" style="overflow:auto;">
 			<aside>
 				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" theme="dark" unique-opened  router>
