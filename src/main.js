@@ -45,6 +45,7 @@ router.beforeEach((route, from, next) => {
 });
 
 //全局拦截器 请求加上token
+<<<<<<< HEAD
 axios.interceptors.request.use(
     config => {
         var token = sessionStorage.getItem("user_token");
@@ -89,6 +90,51 @@ axios.interceptors.response.use(function(response) {
     }
     return Promise.reject(error)
 })
+=======
+axios.interceptors.request.use(  
+  config => {  
+      var token = sessionStorage.getItem("user_token");  
+      if(token != null){  
+          config.headers['token'] = token;  
+      }  
+      // if(config.method=='post'){  
+      //     config.data = {  
+      //         ...config.data,  
+      //         _t: Date.parse(new Date())/1000,  
+      //     }  
+      // }else if(config.method=='get'){  
+      //     config.params = {  
+      //         _t: Date.parse(new Date())/1000,  
+      //         ...config.params  
+      //     }  
+      // }  
+      return config  
+  },function(error){  
+      return Promise.reject(error)  
+  }  
+)  
+axios.interceptors.response.use(function (response) {  
+// token 已过期，重定向到登录页面  
+if (response){  
+  // localStorage.clear()  
+  // router.replace({  
+  //                 path: '/signin',  
+  //                 query: {redirect: router.currentRoute.fullPath}  
+  //             })  
+}  
+return response  
+}, function (error) {  
+// Do something with response error  
+console.log(error.response.status);
+if(error.response.status===401){
+   router.replace({  
+                  path: '/login',  
+                  query: {redirect: router.currentRoute.fullPath}  
+              })  
+}
+return Promise.reject(error)  
+})  
+>>>>>>> 50842c368ee1ef0a2b23f76d57ad9d5e4cacb250
 
 
 new Vue({
