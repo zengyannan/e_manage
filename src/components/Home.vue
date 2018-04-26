@@ -53,7 +53,7 @@ import MenuTree from './MenuTree'
 		if (!isLoadNodes) {
 			let menus = JSON.parse(window.sessionStorage.getItem('menus'))
 			this.nodes.push(...menus)
-			console.log(this.nodes)
+			// console.log(this.nodes)
 			sessionStorage.setItem('isLoadNodes', 'true')
 		}
 	 },
