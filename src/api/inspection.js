@@ -1,36 +1,31 @@
 import axios from 'axios';
 
-let base = '/api/role'
+let base = '/api/inspection'
 
-export const getRoleList = params => {
+export const getInspectionList = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/list', { params: params }).then(
         res => res.data);
 }
 
-export const getAllRole = params => {
+export const getAllInspection = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/all', { params: params }).then(
         res => res.data);
 }
 
-export const updateRole = params => {
+
+export const updateInspection = params => {
     return axios.post(base + '/update', params).then(
         res => res.data);
 }
 
-export const setRoleMenu = params => {
-    return axios.post(base + '/menu/set', params).then(
-        res => res.data);
-}
-
-
-export const insertRole = params => {
+export const insertInspection = params => {
     return axios.post(base + '/add', params).then(
         res => res.data);
 }
 
-export const deleteRole = params => {
+export const deleteInspection = params => {
     return axios.get(base + "/" + params.id + '/delete').then(
         res => res.data);
 }

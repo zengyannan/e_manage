@@ -1,7 +1,7 @@
 <template>
  <div>
  <el-col :span="24" style="text-align:right;">
- <el-button style="margin:7px;" @click="handleInsert">增加用户</el-button>
+ <el-button style="margin:7px;" @click="handleInsert">添加用户</el-button>
  </el-col>
  <el-table
       :data="hrs"
@@ -118,16 +118,16 @@
 
 <!--分配角色对话框-->
 <el-dialog title="分配角色" :visible.sync="dialogSetRolesVisible" label-position="left">
-    <el-table :data="roles" style="width: 100%" 
-    @row-click="handleRoleSelsChange" @selection-change="roleSelsChange" ref="rolesTable">
-        <el-table-column type="selection" width="55"></el-table-column>
+    <el-table :data="roles" style="width: 100%" @row-click="handleRoleSelsChange"  @selection-change="roleSelsChange" ref="rolesTable" >
+        <el-table-column  type="selection" width="55"></el-table-column>
         <el-table-column prop="name" label="英文名">
         </el-table-column>
         <el-table-column prop="nameZh" label="中文名">
         </el-table-column>
     </el-table>
     <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="delGroup" :disabled="this.sels.length === 0">分配角色</el-button>
+        <el-button type="primary" @click="handleDialogSetRoles" :disabled="this.sels.length === 0">分配角色</el-button>
+        <el-button @click="dialogSetRolesVisible = false">取 消</el-button>
         <!--disabled值动态显示，默认为true,当选中复选框后值为false-->
     </div>
     <div class="block">
@@ -143,10 +143,11 @@
         getHrList,
         updateHr,
         insertHr,
-        deleteHr
+        deleteHr,
+        setRoles
     } from '../api/hr';
     import {
-        getRoleList
+        getAllRole
     } from '../api/role';
     export default {
         created() {
@@ -191,11 +192,20 @@
             },
             //响应分配角色对话框表格分页点击事件
             handleRolesCurrentChange(val) {
-                getRoleList()
+                this.rolesPageNum=val;
+                getAllRole({
+                    pageNum: this.rolesPageNum,
+                    pageSize: this.rolesPageSize
+                }).then(res => {
+                    this.roles = res.data.list;
+                    // this.pageNum=res.data.pageNum;
+                    // this.pageSize=res.data.pageSize;
+                    this.rolesTotal = res.data.total;
+                    // this.roleCheckboxInit();
+                });
             },
             //响应删除事件
             handleDelete(val) {
-                console.log(val);
                 this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -225,10 +235,10 @@
                     });
                 });
             },
-            //响应分配角色点击事件
+            //响应分配角色点击事件 打开分配角色窗口
             handleSetRole(val) {
                 this.currentHr = val;
-                getRoleList({
+                getAllRole({
                     pageNum: this.rolesPageNum,
                     pageSize: this.rolesPageSize
                 }).then(res => {
@@ -236,6 +246,7 @@
                     // this.pageNum=res.data.pageNum;
                     // this.pageSize=res.data.pageSize;
                     this.rolesTotal = res.data.total;
+                    // this.roleCheckboxInit();
                     this.dialogSetRolesVisible = true;
                 });
             },
@@ -269,7 +280,7 @@
                                     type: 'success'
                                 });
                                 this.loadHrList();
-                                console.log(this.currentHr);
+                                // console.log(this.currentHr);
                                 this.currentHr = {};
                             }
                         });
@@ -325,16 +336,51 @@
             },
             roleSelsChange(sels) {
                 this.sels = sels;
-                console.log(this.sels);
+                // console.log(this.sels);
             },
-            delGroup() {
-                var ids = this.sels.map(item => item.id).join() //获取所有选中行的id组成的字符串，以逗号分隔
-                console.log(ids);  
+            //处理对话框分配角色事件
+            handleDialogSetRoles() {
+                var ids = this.sels.map(item => item.id).join(); //获取所有选中行的id组成的字符串，以逗号分隔
+                var uid = this.currentHr.id;
+                setRoles({
+                    uid: uid,
+                    ids: ids
+                }).then(res => {
+                    this.dialogSetRolesVisible = false;
+                    let {
+                        meta,
+                        data
+                    } = res;
+                    if (meta.success === false) {
+                        this.$message.error(meta.message);
+                    } else {
+                        this.$message({
+                            message: "操作成功",
+                            type: 'success'
+                        });
+                        this.loadHrList();
+                        this.currentHr = {};
+                        this.sels=[];
+                    }
+                });
             },
             handleRoleSelsChange(row, event, column) {
-                console.log(1);
+                // console.log(row);
                 this.$refs.rolesTable.toggleRowSelection(row)
             }
+            // ,roleCheckboxInit(){
+            //     let roleArr = this.currentHr.roles;
+            //     console.log(roleArr);
+            //     this.roles.forEach((item,index)=>{
+            //         let rid = item.id;
+            //         roleArr.forEach((item,index)=>{
+            //             if(item.id===rid){
+            //                 console.log(this.$refs.rolesTable);
+            //                 // this.$refs.rolesTable.toggleRowSelection(rid,true);
+            //             }
+            //         });
+            //     });
+            // }
         },
         data() {
             return {

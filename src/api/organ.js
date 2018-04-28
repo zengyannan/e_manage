@@ -1,36 +1,30 @@
 import axios from 'axios';
 
-let base = '/api/role'
+let base = '/api/organ'
 
-export const getRoleList = params => {
+export const getOrganList = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/list', { params: params }).then(
         res => res.data);
 }
 
-export const getAllRole = params => {
+export const getAllOrgan = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/all', { params: params }).then(
         res => res.data);
 }
 
-export const updateRole = params => {
+export const updateOrgan = params => {
     return axios.post(base + '/update', params).then(
         res => res.data);
 }
 
-export const setRoleMenu = params => {
-    return axios.post(base + '/menu/set', params).then(
-        res => res.data);
-}
-
-
-export const insertRole = params => {
+export const insertOrgan = params => {
     return axios.post(base + '/add', params).then(
         res => res.data);
 }
 
-export const deleteRole = params => {
+export const deleteOrgan = params => {
     return axios.get(base + "/" + params.id + '/delete').then(
         res => res.data);
 }
