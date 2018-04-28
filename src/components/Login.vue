@@ -116,7 +116,7 @@
                                 //获取token后 获取菜单
                                 getMenuTree().then(
                                     res => {
-                                        console.log(res.data);
+                                        // console.log(res.data);
                                         this.login(res.data);
                                         this.$router.addRoutes(routers);
                                         this.$router.push({

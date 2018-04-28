@@ -25,3 +25,9 @@ export const deleteHr = params => {
     return axios.get(base + "/" + params.id + '/delete').then(
         res => res.data);
 }
+
+export const setRoles = params => {
+    // let url = base+"/list?pageNum="+params.pageNum+"&"
+    return axios.post(base + "/setRoles", params).then(
+        res => res.data);
+}
