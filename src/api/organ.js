@@ -8,12 +8,15 @@ export const getOrganList = params => {
         res => res.data);
 }
 
+<<<<<<< HEAD
 export const getAllOrgan = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/all', { params: params }).then(
         res => res.data);
 }
 
+=======
+>>>>>>> 649502967aece8873c6c5ca43a0bbabf6f858ab5
 export const updateOrgan = params => {
     return axios.post(base + '/update', params).then(
         res => res.data);
