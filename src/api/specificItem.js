@@ -8,6 +8,12 @@ export const getSpecificItemList = params => {
         res => res.data);
 }
 
+export const getSpecificItemListByLsId = params => {
+    // let url = base+"/list?pageNum="+params.pageNum+"&"
+    return axios.get(base + "/" + params.lsId + '/lsId/list', { params: params }).then(
+        res => res.data);
+}
+
 export const getAllSpecificItem = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/all', { params: params }).then(

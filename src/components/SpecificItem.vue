@@ -33,10 +33,10 @@
       </el-table-column>
       <el-table-column
         prop="tips"
-        label="偏离"
+        label="是否偏离"
         width="180"
         :formatter="fmtTips"
-        >
+      >
       </el-table-column>
       <el-table-column
         prop="checker"

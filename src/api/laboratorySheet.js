@@ -20,6 +20,11 @@ export const updateLaboratorySheet = params => {
         res => res.data);
 }
 
+export const setSuggest = params => {
+    return axios.post(base + '/suggest/set', params).then(
+        res => res.data);
+}
+
 export const insertLaboratorySheet = params => {
     return axios.post(base + '/add', params).then(
         res => res.data);

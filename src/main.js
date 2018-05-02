@@ -27,11 +27,12 @@ router.beforeEach((route, from, next) => {
         window.sessionStorage.removeItem('menus')
         window.sessionStorage.removeItem('user_token')
         window.sessionStorage.removeItem('isLoadNodes')
-        window.location.href = '/'
+        window.location.href = '/home'
         return false
     }
     if (route.meta.noRequireAuth === true) {
-        next()
+        next();
+        return;
     }
     if (!menus && route.path !== '/login') {
         next({ path: '/login' })
