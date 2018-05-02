@@ -1,10 +1,6 @@
 <template>
 <div><el-col :span="24" style="text-align:right;">
-<<<<<<< HEAD
  <el-button style="margin:7px;" @click="handleInsert">添加角色</el-button>
-=======
- <el-button style="margin:7px;" @click="handleInsert">增加角色</el-button>
->>>>>>> 649502967aece8873c6c5ca43a0bbabf6f858ab5
  </el-col>
  <el-table
       :data="roles"

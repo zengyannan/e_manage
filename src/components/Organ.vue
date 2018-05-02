@@ -1,11 +1,7 @@
 <template>
 <div>
 <el-col :span="24" style="text-align:right;">
-<<<<<<< HEAD
  <el-button style="margin:7px;"  @click="handleInsert">添加器官病症项</el-button>
-=======
- <el-button style="margin:7px;"  @click="handleInsert">增加器官项</el-button>
->>>>>>> 649502967aece8873c6c5ca43a0bbabf6f858ab5
  </el-col>
  <el-table
       :data="organs"
@@ -186,11 +182,7 @@ export default {
                 });
             },
             handleDelete(val){
-<<<<<<< HEAD
                 this.$confirm('此操作将永久删除该病症, 是否继续?', '提示', {
-=======
-                this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
->>>>>>> 649502967aece8873c6c5ca43a0bbabf6f858ab5
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
