@@ -240,7 +240,7 @@
                 });
                 getAllLaboratorySheet().then(res => {
                     this.laboratorySheets = res.data;
-                });
+                });\
             },
             handleDialogInsert(){
                 insertSpecificItem(this.currentSpecificItem).then(res => {
