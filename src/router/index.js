@@ -29,16 +29,16 @@ export default new Router({
             leaf: true,
             hidden: true
         },
-        {
-            path: '/',
-            name: '首页',
-            component: Index,
-            leaf: true,
-            hidden: true,
-            meta: {
-                noRequireAuth: true
-            },
-        }
+        // {
+        //     path: '/',
+        //     name: '首页',
+        //     component: Index,
+        //     leaf: true,
+        //     hidden: true,
+        //     meta: {
+        //         noRequireAuth: true
+        //     },
+        // }
         // {
         //   path: '/hello',
         //   name: 'test',

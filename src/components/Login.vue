@@ -7,16 +7,16 @@
     <el-form-item prop="checkPass">
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <!-- <el-select  prop="loginType" v-model="ruleForm2.loginType" placeholder="请选择" style="width:100%;">
+    <el-select  prop="loginType" v-model="ruleForm2.loginType" placeholder="请选择账户类型" style="width:100%;">
       <el-option
        v-for="item in options"
         :key="item.value"
         :label="item.label"
         :value="item.value">
       </el-option>
-    </el-select> -->
+    </el-select>
     <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
-    <el-form-item style="width:100%;">
+    <el-form-item style="width:100%;margin-top:30px;">
       <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
       <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     </el-form-item>
@@ -40,15 +40,14 @@
                 ruleForm2: {
                     account: '',
                     checkPass: '',
-                    loginType: 'hr',
                 },
-                // options: [{
-                //     value: 'hr',
-                //     label: '管理員'
-                // }, {
-                //     value: 'doctor',
-                //     label: '醫生'
-                // }],
+                options: [{
+                    value: 'hr',
+                    label: '管理員'
+                }, {
+                    value: 'patient',
+                    label: '患者'
+                }],
                 rules2: {
                     account: [{
                             required: true,
@@ -64,13 +63,13 @@
                         },
                         //{ validator: validaePass2 }
                     ],
-                    // loginType: [{
-                    //         required: true,
-                    //         message: '请选择账户类型',
-                    //         trigger: 'blur'
-                    //     },
-                    //     //{ validator: validaePass2 }
-                    // ]
+                    loginType: [{
+                            required: true,
+                            message: '请选择账户类型',
+                            trigger: 'blur'
+                        },
+                        //{ validator: validaePass2 }
+                    ]
                 },
                 // checked: true
             };
@@ -91,8 +90,8 @@
                         NProgress.start();
                         var loginParams = {
                             username: this.ruleForm2.account,
-                            password: this.ruleForm2.checkPass
-                            // ,loginType: this.ruleForm2.loginType
+                            password: this.ruleForm2.checkPass,
+                            loginType: this.ruleForm2.loginType
                         };
                         requestLogin(loginParams).then(res => {
                             this.logining = false;
