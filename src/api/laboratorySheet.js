@@ -30,6 +30,12 @@ export const insertLaboratorySheet = params => {
         res => res.data);
 }
 
+
+export const insertLaboratorySheetByDoctor = params => {
+    return axios.post(base + '/add/byDoctor', params).then(
+        res => res.data);
+}
+
 export const deleteLaboratorySheet = params => {
     return axios.get(base + "/" + params.id + '/delete').then(
         res => res.data);

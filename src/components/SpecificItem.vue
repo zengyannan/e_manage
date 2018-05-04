@@ -1,7 +1,7 @@
 <template>
 <div>
 <el-col :span="24" style="text-align:right;">
- <el-button style="margin:7px;"  @click="handleInsert">添加具体检测指标</el-button>
+ <!-- <el-button style="margin:7px;"  @click="handleInsert">添加具体检测指标</el-button> -->
  </el-col>
  <el-table
       :data="specificItems"
@@ -67,6 +67,7 @@
                 <el-option v-for="item in specifics" :key="item.id" :label="item.zhName" :value="item.id">
                 </el-option>
             </el-select>
+            <!-- <el-input read-only v-model="currentSpecificItem.specific.zhName"></el-input> -->
         </el-form-item>
         <el-form-item label="结果值">
             <el-input v-model="currentSpecificItem.result" auto-complete="off"></el-input>
@@ -92,22 +93,25 @@
 <el-dialog title="修改" :visible.sync="dialogEditVisible">
     <el-form :model="currentSpecificItem" ref="currentSpecificItemEditForm" label-position="left">
         <el-form-item label="所属检验指标">
-            <el-select v-model="currentSpecificItem.specificId" placeholder="请选择">
+            <!-- <el-select v-model="currentSpecificItem.specificId" placeholder="请选择">
                 <el-option v-for="item in specifics" :key="item.id" :label="item.zhName" :value="item.id">
                 </el-option>
-            </el-select>
+            </el-select> -->
+            <el-input readonly v-model="currentSpecific.zhName"></el-input>
         </el-form-item>
         <el-form-item label="结果值">
             <el-input v-model="currentSpecificItem.result" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="检验人">
-            <el-input v-model="currentSpecificItem.checker" auto-complete="off"></el-input>
+            <el-input readonly v-model="currentSpecificItem.checker" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="所属单号">
-            <el-select v-model="currentSpecificItem.lsId" placeholder="请选择">
+            <!-- <el-select v-model="currentSpecificItem.lsId" placeholder="请选择">
                 <el-option v-for="item in laboratorySheets" :key="item.id" :label="item.id" :value="item.id">
                 </el-option>
-            </el-select>
+            </el-select> -->
+            <el-input readonly v-model="currentSpecificItem.lsId" auto-complete="off">
+            </el-input>
         </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -173,17 +177,19 @@
                     this.total = res.data.total;
                 });
             },
-            handleEdit(val){
+            handleEdit(val) {
                 this.currentSpecificItem = JSON.parse(JSON.stringify(val));
+                this.currentSpecific = JSON.parse(JSON.stringify(val.specific));
+                console.log(this.currentSpecificItem);
                 this.dialogEditVisible = true;
                 getAllSpecific().then(res => {
                     this.specifics = res.data;
                 });
-                getAllLaboratorySheet().then(res => {
-                    this.laboratorySheets = res.data;
-                });
+                // getAllLaboratorySheet().then(res => {
+                //     this.laboratorySheets = res.data;
+                // });
             },
-            handleDialogEdit(){
+            handleDialogEdit() {
                 updateSpecificItem(this.currentSpecificItem).then(res => {
                     this.dialogEditVisible = false;
                     let {
@@ -199,10 +205,11 @@
                         });
                         this.loadSpecificItemList();
                         this.currentSpecificItem = {};
+                        this.currentSpecific = {}
                     }
                 });
             },
-            handleDelete(val){
+            handleDelete(val) {
                 this.$confirm('此操作将永久删除该检验指标, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -242,7 +249,7 @@
                     this.laboratorySheets = res.data;
                 });
             },
-            handleDialogInsert(){
+            handleDialogInsert() {
                 insertSpecificItem(this.currentSpecificItem).then(res => {
                     this.dialogInsertVisible = false;
                     let {
@@ -267,8 +274,7 @@
                     return '平均值内';
                 } else if (tips == 3) {
                     return '偏高';
-                }
-                else if (tips == 4) {
+                } else if (tips == 4) {
                     return '偏低';
                 }
             }
@@ -280,18 +286,19 @@
                 pageSize: 5,
                 specificItems: [],
                 specifics: [],
-                laboratorySheets:[],
+                laboratorySheets: [],
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogSetMenuVisible: false,
                 currentSpecificItem: {},
+                currentSpecific: {},
                 statusOptions: [{
                     value: 2,
                     label: '平均值内'
                 }, {
                     value: 3,
                     label: '偏高'
-                },{
+                }, {
                     value: 4,
                     label: '偏低'
                 }],

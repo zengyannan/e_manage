@@ -51,7 +51,7 @@
                             <el-tag>医生建议</el-tag>
                         </div>
                     </el-popover>
-                </template>
+    </template>
 </el-table-column>
 <el-table-column prop="status" label="是否处理" :formatter="fmtStatus">
 </el-table-column>
@@ -59,7 +59,7 @@
     <template slot-scope="scope">
                     <el-button @click="handleLook(scope.row)" type="text" >查看检验结果</el-button>
                     <el-button style="margin-left:0;" @click="handleSetSuggest(scope.row)" type="text" >给出医生建议</el-button>
-                </template>
+    </template>
 </el-table-column>
 </el-table>
 <div class="block">
@@ -71,6 +71,9 @@
 
 <!--查看对话框-->
 <el-dialog title="查看" :visible.sync="dialogLookVisible">
+    <el-col :span="24" style="text-align:right;">
+        <el-button style="margin:7px;" @click="handleSpecificItemInsert">添加指标项</el-button>
+    </el-col>
     <el-table :data="specificItems" style="width: 100%" ref="specificItemsTable">
         <el-table-column prop="specific.zhName" label="检测指标">
         </el-table-column>
@@ -98,6 +101,34 @@
 </el-dialog>
 <!--查看对话框结束-->
 
+
+<!--新增病人指标数值对话框-->
+<el-dialog title="新增" :visible.sync="dialogSpecificItemInsertVisible">
+    <el-form :model="currentSpecificItem" ref="currentSpecificItemInsertForm" label-position="left">
+        <el-form-item label="所属检验指标">
+            <el-select v-model="currentSpecificItem.specificId" placeholder="请选择">
+                <el-option v-for="item in specifics" :key="item.id" :label="item.zhName" :value="item.id">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="结果值">
+            <el-input v-model="currentSpecificItem.result" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="检验人">
+            <el-input v-model="currentSpecificItem.checker" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="所属单号">
+            <el-input readonly v-model="currentSpecificItem.lsId" auto-complete="off">
+            </el-input>
+        </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogSpecificItemInsertVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleDialogSpecificItemInsert">确 定</el-button>
+    </div>
+</el-dialog>
+<!--新增病人指标数值对话框结束-->
+
 <!--给出建议对话框-->
 <el-dialog title="医生建议" :visible.sync="dialogSetSuggestVisible">
     <el-form :model="currentLaboratorySheet" ref="currentLaboratorySheetSetSuggestForm" label-position="left">
@@ -111,6 +142,31 @@
 </el-dialog>
 <!--给出建议对话框结束-->
 
+<!--新增对话框-->
+<el-dialog title="添加检验单" :visible.sync="dialogInsertVisible">
+    <el-form :model="currentLaboratorySheet" ref="currentLaboratorySheetInsertForm" label-position="left">
+        <el-form-item label="患者身份证号">
+            <!-- <el-select @change="changePatient" v-model="currentLaboratorySheet.patientId" placeholder="请选择">
+                <el-option v-for="item in patients" :key="item.id" :label="item.idCard" :value="item.id">
+                </el-option>
+            </el-select> -->
+            <el-autocomplete width="300" class="inline-input" v-model="currentIdCard" :fetch-suggestions="querySearch" placeholder="请输入身份证号" @select="handleSelect"></el-autocomplete>
+        </el-form-item>
+        <el-form-item label="姓名">
+            <el-input readonly v-model="currentPatient.name" auto-complete="off">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+            <el-input readonly v-model="currentPatient.phone" auto-complete="off">
+            </el-input>
+        </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogInsertVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleDialogInsert">确 定</el-button>
+    </div>
+</el-dialog>
+<!--新增对话框结束-->
 
 </div>
 </template>
@@ -120,12 +176,20 @@
 <script>
     import {
         getLaboratorySheetList,
-        setSuggest
+        setSuggest,
+        insertLaboratorySheetByDoctor
     } from '../api/laboratorySheet';
     import {
+        insertSpecificItem,
         getSpecificItemListByLsId
     }
     from '../api/specificItem';
+    import {
+        getAllSpecific
+    } from '../api/specific';
+    import {
+        getAllPatient
+    } from '../api/patient';
     export default {
         created() {
             getLaboratorySheetList({
@@ -148,6 +212,18 @@
                     this.pageNum = res.data.pageNum;
                     this.pageSize = res.data.pageSize;
                     this.total = res.data.total;
+                });
+            },
+            loadSpecificItemListByLsId() {
+                getSpecificItemListByLsId({
+                    pageNum: this.lookPageNum,
+                    pageSize: this.lookPageSize,
+                    lsId: this.currentLaboratorySheet.id
+                }).then(res => {
+                    this.specificItems = res.data.list;
+                    this.lookPageNum = res.data.pageNum;
+                    this.lookPageSize = res.data.pageSize;
+                    this.lookTotal = res.data.total;
                 });
             },
             handleSizeChange(val) {
@@ -223,6 +299,33 @@
                     }
                 });
             },
+            handleSpecificItemInsert() {
+                this.dialogSpecificItemInsertVisible = true;
+                this.currentSpecificItem = {};
+                this.currentSpecificItem.lsId = this.currentLaboratorySheet.id;
+                getAllSpecific().then(res => {
+                    this.specifics = res.data;
+                });
+            },
+            handleDialogSpecificItemInsert() {
+                insertSpecificItem(this.currentSpecificItem).then(res => {
+                    this.dialogSpecificItemInsertVisible = false;
+                    let {
+                        meta,
+                        data
+                    } = res;
+                    if (meta.success === false) {
+                        this.$message.error(meta.message);
+                    } else {
+                        this.$message({
+                            message: "操作成功",
+                            type: 'success'
+                        });
+                        this.loadSpecificItemListByLsId();
+                        this.currentSpecificItem = {};
+                    }
+                });
+            },
             fmtStatus(row, column) {
                 const status = row[column.property]
                 if (status == 2) {
@@ -241,12 +344,67 @@
                     return '偏低';
                 }
             },
+            changePatient(value) {
+                console.log(value);
+                let obj = {};
+                obj = this.patients.find((item) => {
+                    if (item.id === value)
+                        return item;
+                });
+                this.currentPatient = obj;
+                console.log(obj);
+            },
             handleInsert() {
-
+                this.currentLaboratorySheet = {};
+                this.dialogInsertVisible = true;
+                getAllPatient().then(res => {
+                    this.patients = res.data;
+                    this.patients.forEach((item) => {
+                        item.value = item.idCard;
+                    });
+                });
+            },
+            handleDialogInsert() {
+                insertLaboratorySheetByDoctor(this.currentLaboratorySheet).then(res => {
+                    this.dialogInsertVisible = false;
+                    let {
+                        meta,
+                        data
+                    } = res;
+                    if (meta.success === false) {
+                        this.$message.error(meta.message);
+                    } else {
+                        this.$message({
+                            message: "操作成功",
+                            type: 'success'
+                        });
+                        this.loadLaboratorySheetList();
+                        this.currentLaboratorySheet = {};
+                        this.currentPatient = {};
+                    }
+                });
+            },
+            querySearch(queryString, cb) {
+                var patients = this.patients;
+                var results = queryString ? patients.filter(this.createFilter(queryString)) : patients;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter(queryString) {
+                return (patient) => {
+                    return (patient.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleSelect(item) {
+                console.log(item);
+                this.currentPatient = item;
+                this.currentLaboratorySheet.patientId = item.id;
+                console.log(this.currentLaboratorySheet);
             }
         },
         data() {
             return {
+                currentIdCard: '',
                 pageNum: 1,
                 total: 0,
                 pageSize: 5,
@@ -255,11 +413,16 @@
                 lookPageSize: 5,
                 laboratorySheets: [],
                 specificItems: [],
+                specifics: [],
+                patients: [],
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogLookVisible: false,
                 dialogSetSuggestVisible: false,
+                dialogSpecificItemInsertVisible: false,
                 currentLaboratorySheet: {},
+                currentPatient: {},
+                currentSpecificItem: {},
                 statusOptions: [{
                     value: 1,
                     label: '可用'
