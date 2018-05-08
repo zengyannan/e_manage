@@ -161,10 +161,8 @@
             </el-input>
         </el-form-item>
         <el-form-item label="所属器官检验单的类型">
-            <el-select v-model="currentLaboratorySheet.organId" placeholder="请选择">
-                <el-option v-for="item in organs" :key="item.id" :label="item.zhName" :value="item.id">
-                </el-option>
-            </el-select>
+            <el-input readonly v-model="organ.zhName" auto-complete="off">
+            </el-input>
         </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -181,7 +179,7 @@
 
 <script>
     import {
-        getLaboratorySheetList,
+        getLaboratorySheetListByOrgan,
         setSuggest,
         insertLaboratorySheetByDoctor
     } from '../api/laboratorySheet';
@@ -191,19 +189,20 @@
     }
     from '../api/specificItem';
     import {
-        getAllSpecific
+        getSpecificListByOrganId
     } from '../api/specific';
     import {
         getAllPatient
     } from '../api/patient';
     import {
-        getAllOrgan
+        getOrganById
     } from '../api/organ';
     export default {
         created() {
-            getLaboratorySheetList({
+            getLaboratorySheetListByOrgan({
                 pageNum: this.pageNum,
-                pageSize: this.pageSize
+                pageSize: this.pageSize,
+                organId:this.organId
             }).then(res => {
                 this.laboratorySheets = res.data.list;
                 this.pageNum = res.data.pageNum;
@@ -213,9 +212,10 @@
         },
         methods: {
             loadLaboratorySheetList() {
-                getLaboratorySheetList({
+                getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    organId:this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     this.pageNum = res.data.pageNum;
@@ -241,9 +241,10 @@
             //响应分页点击事件
             handleCurrentChange(val) {
                 this.pageNum = val;
-                getLaboratorySheetList({
+                getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    organId:this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     // this.pageNum=res.data.pageNum;
@@ -312,7 +313,7 @@
                 this.dialogSpecificItemInsertVisible = true;
                 this.currentSpecificItem = {};
                 this.currentSpecificItem.lsId = this.currentLaboratorySheet.id;
-                getAllSpecific().then(res => {
+                getSpecificListByOrganId({id:this.organId}).then(res => {
                     this.specifics = res.data;
                 });
             },
@@ -372,8 +373,8 @@
                         item.value = item.idCard;
                     });
                 });
-                getAllOrgan().then(res => {
-                    this.organs = res.data;
+                getOrganById({id:this.organId}).then(res => {
+                    this.organ = res.data;
                 });
             },
             handleDialogInsert() {
@@ -416,6 +417,7 @@
         },
         data() {
             return {
+                organId:1,
                 currentIdCard: '',
                 pageNum: 1,
                 total: 0,
@@ -427,7 +429,7 @@
                 specificItems: [],
                 specifics: [],
                 patients: [],
-                organs:[],
+                organ:{},
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogLookVisible: false,

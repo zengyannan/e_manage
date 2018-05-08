@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-col :span="24" style="text-align:right;">
-         <el-button style="margin:7px;"  @click="handleInsert">添加检验单</el-button>
+         <el-button style="margin:7px;"  @click="handleInsert">申请检验单</el-button>
          </el-col>
         <el-table
                 :data="laboratorySheets"
@@ -58,7 +58,6 @@
 <el-table-column fixed="right" label="操作">
     <template slot-scope="scope">
                     <el-button @click="handleLook(scope.row)" type="text" >查看检验结果</el-button>
-                    <el-button style="margin-left:0;" @click="handleSetSuggest(scope.row)" type="text" >给出医生建议</el-button>
     </template>
 </el-table-column>
 </el-table>
@@ -129,18 +128,6 @@
 </el-dialog>
 <!--新增病人指标数值对话框结束-->
 
-<!--给出建议对话框-->
-<el-dialog title="医生建议" :visible.sync="dialogSetSuggestVisible">
-    <el-form :model="currentLaboratorySheet" ref="currentLaboratorySheetSetSuggestForm" label-position="left">
-        <el-input maxlength=256 type="textarea" :rows="5" placeholder="请输入建议" v-model="currentLaboratorySheet.suggest">
-        </el-input>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogSetSuggestVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleDialogSetSuggest">确 定</el-button>
-    </div>
-</el-dialog>
-<!--给出建议对话框结束-->
 
 <!--新增对话框-->
 <el-dialog title="添加检验单" :visible.sync="dialogInsertVisible">
@@ -150,7 +137,8 @@
                 <el-option v-for="item in patients" :key="item.id" :label="item.idCard" :value="item.id">
                 </el-option>
             </el-select> -->
-            <el-autocomplete width="300" class="inline-input" v-model="currentIdCard" :fetch-suggestions="querySearch" placeholder="请输入身份证号" @select="handleSelect"></el-autocomplete>
+            <el-input readonly v-model="currentPatient.idCard" auto-complete="off">
+            </el-input>
         </el-form-item>
         <el-form-item label="姓名">
             <el-input readonly v-model="currentPatient.name" auto-complete="off">
@@ -161,10 +149,8 @@
             </el-input>
         </el-form-item>
         <el-form-item label="所属器官检验单的类型">
-            <el-select v-model="currentLaboratorySheet.organId" placeholder="请选择">
-                <el-option v-for="item in organs" :key="item.id" :label="item.zhName" :value="item.id">
-                </el-option>
-            </el-select>
+            <el-input readonly v-model="organ.zhName" auto-complete="off">
+            </el-input>
         </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -181,7 +167,7 @@
 
 <script>
     import {
-        getLaboratorySheetList,
+        getLaboratorySheetListByOrgan,
         setSuggest,
         insertLaboratorySheetByDoctor
     } from '../api/laboratorySheet';
@@ -191,19 +177,20 @@
     }
     from '../api/specificItem';
     import {
-        getAllSpecific
+        getSpecificListByOrganId
     } from '../api/specific';
     import {
-        getAllPatient
+        getPatientByToken
     } from '../api/patient';
     import {
-        getAllOrgan
+        getOrganById
     } from '../api/organ';
     export default {
         created() {
-            getLaboratorySheetList({
+            getLaboratorySheetListByOrgan({
                 pageNum: this.pageNum,
-                pageSize: this.pageSize
+                pageSize: this.pageSize,
+                organId:this.organId
             }).then(res => {
                 this.laboratorySheets = res.data.list;
                 this.pageNum = res.data.pageNum;
@@ -213,9 +200,10 @@
         },
         methods: {
             loadLaboratorySheetList() {
-                getLaboratorySheetList({
+                getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    organId:this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     this.pageNum = res.data.pageNum;
@@ -241,9 +229,10 @@
             //响应分页点击事件
             handleCurrentChange(val) {
                 this.pageNum = val;
-                getLaboratorySheetList({
+                getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    organId:this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     // this.pageNum=res.data.pageNum;
@@ -312,7 +301,7 @@
                 this.dialogSpecificItemInsertVisible = true;
                 this.currentSpecificItem = {};
                 this.currentSpecificItem.lsId = this.currentLaboratorySheet.id;
-                getAllSpecific().then(res => {
+                getSpecificListByOrganId({id:this.organId}).then(res => {
                     this.specifics = res.data;
                 });
             },
@@ -366,14 +355,11 @@
             handleInsert() {
                 this.currentLaboratorySheet = {};
                 this.dialogInsertVisible = true;
-                getAllPatient().then(res => {
-                    this.patients = res.data;
-                    this.patients.forEach((item) => {
-                        item.value = item.idCard;
-                    });
+                getPatientByToken().then(res => {
+                    this.currentPatient = res.data;
                 });
-                getAllOrgan().then(res => {
-                    this.organs = res.data;
+                getOrganById({id:this.organId}).then(res => {
+                    this.organ = res.data;
                 });
             },
             handleDialogInsert() {
@@ -416,6 +402,7 @@
         },
         data() {
             return {
+                organId:1,
                 currentIdCard: '',
                 pageNum: 1,
                 total: 0,
@@ -426,8 +413,8 @@
                 laboratorySheets: [],
                 specificItems: [],
                 specifics: [],
-                patients: [],
-                organs:[],
+                organ:{},
+                patient:{},
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogLookVisible: false,

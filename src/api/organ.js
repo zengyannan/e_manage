@@ -28,3 +28,8 @@ export const deleteOrgan = params => {
     return axios.get(base + "/" + params.id + '/delete').then(
         res => res.data);
 }
+
+export const getOrganById = params => {
+    return axios.get(base + "/" + params.id).then(
+        res => res.data);
+}

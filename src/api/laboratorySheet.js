@@ -8,6 +8,12 @@ export const getLaboratorySheetList = params => {
         res => res.data);
 }
 
+export const getLaboratorySheetListByOrgan = params => {
+    // let url = base+"/list?pageNum="+params.pageNum+"&"
+    return axios.get(base + '/list/byOrgan', { params: params }).then(
+        res => res.data);
+}
+
 export const getAllLaboratorySheet = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"
     return axios.get(base + '/all', { params: params }).then(

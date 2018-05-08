@@ -32,6 +32,11 @@ export const deletePatient = params => {
         res => res.data);
 }
 
+export const getPatientByToken = params => {
+    return axios.get(base + "/byToken").then(
+        res => res.data);
+}
+
 /**
  * 患者端方法
  */
