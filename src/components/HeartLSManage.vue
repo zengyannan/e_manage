@@ -132,8 +132,15 @@
 <!--给出建议对话框-->
 <el-dialog title="医生建议" :visible.sync="dialogSetSuggestVisible">
     <el-form :model="currentLaboratorySheet" ref="currentLaboratorySheetSetSuggestForm" label-position="left">
-        <el-input maxlength=256 type="textarea" :rows="5" placeholder="请输入建议" v-model="currentLaboratorySheet.suggest">
+        <el-input maxlength=1000 type="textarea" :rows="5" placeholder="请输入建议" v-model="currentLaboratorySheet.suggest">
         </el-input>
+        <!-- <div class="edit_container">
+       <quill-editor v-model="currentLaboratorySheet.suggest"
+              ref="suggestQuillEditor"
+              class="editer"
+              :options="editorOption" @ready="onEditorReady($event)">
+       </quill-editor>
+      </div> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
         <el-button @click="dialogSetSuggestVisible = false">取 消</el-button>
@@ -197,12 +204,17 @@
     import {
         getOrganById
     } from '../api/organ';
+    import {
+        quillEditor
+    } from 'vue-quill-editor' //调用编辑器
+    import 'quill/dist/quill.core.css';
+    import 'quill/dist/quill.snow.css';
     export default {
         created() {
             getLaboratorySheetListByOrgan({
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
-                organId:this.organId
+                organId: this.organId
             }).then(res => {
                 this.laboratorySheets = res.data.list;
                 this.pageNum = res.data.pageNum;
@@ -215,7 +227,7 @@
                 getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    organId:this.organId
+                    organId: this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     this.pageNum = res.data.pageNum;
@@ -244,7 +256,7 @@
                 getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    organId:this.organId
+                    organId: this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     // this.pageNum=res.data.pageNum;
@@ -279,13 +291,15 @@
                 });
                 this.dialogLookVisible = true;
             },
+            //准备编辑器
+            onEditorReady(editor) {},
             handleSetSuggest(val) {
                 this.currentLaboratorySheet = JSON.parse(JSON.stringify(val));
                 this.dialogSetSuggestVisible = true;
             },
             handleDialogSetSuggest() {
-                if (this.currentLaboratorySheet.suggest.length > 256) {
-                    this.$message.error("建议长度不能大于256");
+                if (this.currentLaboratorySheet.suggest.length > 1000) {
+                    this.$message.error("建议长度过长");
                     return;
                 }
                 setSuggest({
@@ -313,7 +327,9 @@
                 this.dialogSpecificItemInsertVisible = true;
                 this.currentSpecificItem = {};
                 this.currentSpecificItem.lsId = this.currentLaboratorySheet.id;
-                getSpecificListByOrganId({id:this.organId}).then(res => {
+                getSpecificListByOrganId({
+                    id: this.organId
+                }).then(res => {
                     this.specifics = res.data;
                 });
             },
@@ -373,7 +389,9 @@
                         item.value = item.idCard;
                     });
                 });
-                getOrganById({id:this.organId}).then(res => {
+                getOrganById({
+                    id: this.organId
+                }).then(res => {
                     this.organ = res.data;
                 });
             },
@@ -417,7 +435,7 @@
         },
         data() {
             return {
-                organId:1,
+                organId: 1,
                 currentIdCard: '',
                 pageNum: 1,
                 total: 0,
@@ -429,7 +447,7 @@
                 specificItems: [],
                 specifics: [],
                 patients: [],
-                organ:{},
+                organ: {},
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogLookVisible: false,
@@ -445,7 +463,19 @@
                     value: 2,
                     label: '禁用'
                 }],
+                editorOption: {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+                            ['blockquote', 'code-block']
+                        ]
+                    }
+                }
             }
+        },
+        components: {
+            //使用编辑器
+            quillEditor
         }
     }
 </script>

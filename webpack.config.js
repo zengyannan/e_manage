@@ -15,6 +15,11 @@ module.exports = (options = {}) => ({
         chunkFilename: '[id].js?[chunkhash]',
         publicPath: options.dev ? '/assets/' : publicPath
     },
+    // output: {
+    //     filename: 'bundle.js',
+    //     path: resolve(__dirname, 'dist'),
+    //     crossOriginLoading: "anonymous"
+    // },
     module: {
         rules: [{
                 test: /\.vue$/,
