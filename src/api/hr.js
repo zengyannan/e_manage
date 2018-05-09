@@ -7,6 +7,11 @@ export const getHrList = params => {
     return axios.get(base + '/list', { params: params }).then(
         res => res.data);
 }
+export const getHrListByRoleName = params => {
+    // let url = base+"/list?pageNum="+params.pageNum+"&"
+    return axios.get(base + '/list/byRoleName', { params: params }).then(
+        res => res.data);
+}
 
 export const updateHr = params => {
     // let url = base+"/list?pageNum="+params.pageNum+"&"

@@ -118,8 +118,8 @@
 
 <!--分配角色对话框-->
 <el-dialog title="分配角色" :visible.sync="dialogSetRolesVisible" label-position="left">
-    <el-table :data="roles" style="width: 100%" @row-click="handleRoleSelsChange"  @selection-change="roleSelsChange" ref="rolesTable" >
-        <el-table-column  type="selection" width="55"></el-table-column>
+    <el-table :data="roles" style="width: 100%" @row-click="handleRoleSelsChange" @selection-change="roleSelsChange" ref="rolesTable">
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="name" label="英文名">
         </el-table-column>
         <el-table-column prop="nameZh" label="中文名">
@@ -130,10 +130,10 @@
         <el-button @click="dialogSetRolesVisible = false">取 消</el-button>
         <!--disabled值动态显示，默认为true,当选中复选框后值为false-->
     </div>
-    <div class="block">
+    <!-- <div class="block">
         <el-pagination @current-change="handleRolesCurrentChange" :current-page.sync="rolesPageNum" :page-size="rolesPageSize" layout="total, prev, pager, next" :total="rolesTotal" background>
         </el-pagination>
-    </div>
+    </div> -->
 </el-dialog>
 <!--分配角色对话框 结束-->
 </div>
@@ -191,19 +191,19 @@
                 });
             },
             //响应分配角色对话框表格分页点击事件
-            handleRolesCurrentChange(val) {
-                this.rolesPageNum=val;
-                getAllRole({
-                    pageNum: this.rolesPageNum,
-                    pageSize: this.rolesPageSize
-                }).then(res => {
-                    this.roles = res.data.list;
-                    // this.pageNum=res.data.pageNum;
-                    // this.pageSize=res.data.pageSize;
-                    this.rolesTotal = res.data.total;
-                    // this.roleCheckboxInit();
-                });
-            },
+            // handleRolesCurrentChange(val) {
+            //     this.rolesPageNum=val;
+            //     getAllRole({
+            //         pageNum: this.rolesPageNum,
+            //         pageSize: this.rolesPageSize
+            //     }).then(res => {
+            //         this.roles = res.data.list;
+            //         // this.pageNum=res.data.pageNum;
+            //         // this.pageSize=res.data.pageSize;
+            //         this.rolesTotal = res.data.total;
+            //         // this.roleCheckboxInit();
+            //     });
+            // },
             //响应删除事件
             handleDelete(val) {
                 this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
@@ -238,14 +238,15 @@
             //响应分配角色点击事件 打开分配角色窗口
             handleSetRole(val) {
                 this.currentHr = val;
-                getAllRole({
-                    pageNum: this.rolesPageNum,
-                    pageSize: this.rolesPageSize
-                }).then(res => {
-                    this.roles = res.data.list;
+                // getAllRole({
+                //     pageNum: this.rolesPageNum,
+                //     pageSize: this.rolesPageSize
+                // })
+                getAllRole().then(res => {
+                    this.roles = res.data;
                     // this.pageNum=res.data.pageNum;
                     // this.pageSize=res.data.pageSize;
-                    this.rolesTotal = res.data.total;
+                    // this.rolesTotal = res.data.total;
                     // this.roleCheckboxInit();
                     this.dialogSetRolesVisible = true;
                 });
@@ -360,7 +361,7 @@
                         });
                         this.loadHrList();
                         this.currentHr = {};
-                        this.sels=[];
+                        this.sels = [];
                     }
                 });
             },

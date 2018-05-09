@@ -148,6 +148,12 @@
             <el-input readonly v-model="currentPatient.phone" auto-complete="off">
             </el-input>
         </el-form-item>
+        <el-form-item label="所属医生">
+            <el-select v-model="currentLaboratorySheet.doctorId" placeholder="请选择">
+                <el-option v-for="item in doctors" :key="item.id" :label="item.name" :value="item.id">
+                </el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="所属器官检验单的类型">
             <el-input readonly v-model="organ.zhName" auto-complete="off">
             </el-input>
@@ -169,7 +175,7 @@
     import {
         getLaboratorySheetListByOrgan,
         setSuggest,
-        insertLaboratorySheetByDoctor
+        insertLaboratorySheetByPatient
     } from '../api/laboratorySheet';
     import {
         insertSpecificItem,
@@ -185,12 +191,15 @@
     import {
         getOrganById
     } from '../api/organ';
+    import {
+        getHrListByRoleName
+    } from '../api/hr';
     export default {
         created() {
             getLaboratorySheetListByOrgan({
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
-                organId:this.organId
+                organId: this.organId
             }).then(res => {
                 this.laboratorySheets = res.data.list;
                 this.pageNum = res.data.pageNum;
@@ -203,7 +212,7 @@
                 getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    organId:this.organId
+                    organId: this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     this.pageNum = res.data.pageNum;
@@ -232,7 +241,7 @@
                 getLaboratorySheetListByOrgan({
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    organId:this.organId
+                    organId: this.organId
                 }).then(res => {
                     this.laboratorySheets = res.data.list;
                     // this.pageNum=res.data.pageNum;
@@ -301,7 +310,9 @@
                 this.dialogSpecificItemInsertVisible = true;
                 this.currentSpecificItem = {};
                 this.currentSpecificItem.lsId = this.currentLaboratorySheet.id;
-                getSpecificListByOrganId({id:this.organId}).then(res => {
+                getSpecificListByOrganId({
+                    id: this.organId
+                }).then(res => {
                     this.specifics = res.data;
                 });
             },
@@ -354,16 +365,24 @@
             },
             handleInsert() {
                 this.currentLaboratorySheet = {};
+                this.currentLaboratorySheet.organId = this.organId;
                 this.dialogInsertVisible = true;
                 getPatientByToken().then(res => {
                     this.currentPatient = res.data;
                 });
-                getOrganById({id:this.organId}).then(res => {
+                getHrListByRoleName({
+                    roleName: "ROLE_heart_doctor"
+                }).then(res => {
+                    this.doctors = res.data;
+                });
+                getOrganById({
+                    id: this.organId
+                }).then(res => {
                     this.organ = res.data;
                 });
             },
             handleDialogInsert() {
-                insertLaboratorySheetByDoctor(this.currentLaboratorySheet).then(res => {
+                insertLaboratorySheetByPatient(this.currentLaboratorySheet).then(res => {
                     this.dialogInsertVisible = false;
                     let {
                         meta,
@@ -396,13 +415,13 @@
             handleSelect(item) {
                 console.log(item);
                 this.currentPatient = item;
-                this.currentLaboratorySheet.patientId = item.id;
+                // this.currentLaboratorySheet.patientId = item.id;
                 console.log(this.currentLaboratorySheet);
             }
         },
         data() {
             return {
-                organId:1,
+                organId: 1,
                 currentIdCard: '',
                 pageNum: 1,
                 total: 0,
@@ -413,8 +432,9 @@
                 laboratorySheets: [],
                 specificItems: [],
                 specifics: [],
-                organ:{},
-                patient:{},
+                doctors: [],
+                organ: {},
+                patient: {},
                 dialogEditVisible: false,
                 dialogInsertVisible: false,
                 dialogLookVisible: false,

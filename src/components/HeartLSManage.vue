@@ -382,6 +382,7 @@
             },
             handleInsert() {
                 this.currentLaboratorySheet = {};
+                this.currentLaboratorySheet.organId=this.organId;
                 this.dialogInsertVisible = true;
                 getAllPatient().then(res => {
                     this.patients = res.data;
