@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column
         prop="menus"
-        label="角色"
+        label="菜单"
         :formatter="fmtMenus"
         >
       </el-table-column>
