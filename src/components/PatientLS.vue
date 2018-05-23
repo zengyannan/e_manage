@@ -156,7 +156,7 @@
                 getSpecificItemListByLsId({
                     pageNum: this.lookPageNum,
                     pageSize: this.lookPageSize,
-                    lsId: val.id
+                    lsId: this.currentLaboratorySheet.id
                 }).then(res => {
                     this.specificItems = res.data.list;
                     this.lookPageNum = res.data.pageNum;

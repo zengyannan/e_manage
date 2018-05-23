@@ -11,9 +11,11 @@ module.exports = (options = {}) => ({
     },
     output: {
         path: resolve(__dirname, 'dist'),
-        filename: options.dev ? '[name].js' : '[name].js?[chunkhash]',
-        chunkFilename: '[id].js?[chunkhash]',
-        publicPath: options.dev ? '/assets/' : publicPath
+        filename: options.dev ? 'js/[name].js' : 'js/[name].js?[chunkhash]',
+        chunkFilename: 'js/[id].js?[chunkhash]',
+        publicPath: options.dev ? '/assets/' : publicPath,
+        // assetsSubDirectory: 'js',
+        // assetsPublicPath: "/",
     },
     // output: {
     //     filename: 'bundle.js',
