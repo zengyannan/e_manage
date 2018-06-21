@@ -27,7 +27,8 @@ router.beforeEach((route, from, next) => {
         window.sessionStorage.removeItem('menus')
         window.sessionStorage.removeItem('user_token')
         window.sessionStorage.removeItem('isLoadNodes')
-        window.location.href = '/home'
+            // window.location.href = '/login'
+        next({ path: '/login' })
         return false
     }
     if (route.meta.noRequireAuth === true) {
